@@ -31,19 +31,22 @@ struct ServerBar : View {
     /// Called when the user presses the save button
     let onSave: (String) -> ()
     
+    func action(fun : KeyPath<ServerBar,(String)->()>) -> () -> () {
+        return { self[keyPath: fun](address) }
+    }
+    
     @State
     var address: String = ""
     
     var body: some View {
         HStack {
             TextField("Server", text: $address)
-            Button("Search") {
-                onSearch("Searched")
-            }
-            
-            Button("Add") {
-                onSave("Saved")
-            }
+            Button("Search", action:
+                action(fun: \.onSearch)
+            )
+            Button("Add", action: 
+                action(fun: \.onSave)
+            )
         }
     }
 }
