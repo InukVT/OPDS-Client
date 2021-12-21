@@ -32,14 +32,7 @@ let package = Package(
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
             ],
             capabilities: [
-                .localNetwork(purposeString: "Finding local OPDS servers", bonjourServiceTypes: ["_calibre._tcp.", ""]),
-                .appTransportSecurity(configuration: .init(
-                    exceptionDomains: [
-                        .init(
-                            domainName: "New Exception Domain"
-                        )
-                    ]
-                ))
+                .localNetwork(purposeString: "Finding local OPDS servers", bonjourServiceTypes: ["_calibre._tcp.", ""])
             ]
         )
     ],
