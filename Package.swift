@@ -16,6 +16,7 @@ let package = Package(
         .iOSApplication(
             name: "OPDS Client",
             targets: ["AppModule"],
+            teamIdentifier: "2D7T23VV7R",
             displayVersion: "1.0",
             bundleVersion: "1",
             iconAssetName: "AppIcon",
@@ -31,13 +32,28 @@ let package = Package(
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
             ],
             capabilities: [
-                .localNetwork(purposeString: "Finding local OPDS servers")
+                .localNetwork(purposeString: "Finding local OPDS servers", bonjourServiceTypes: ["_calibre._tcp.", ""]),
+                .appTransportSecurity(configuration: .init(
+                    exceptionDomains: [
+                        .init(
+                            domainName: "New Exception Domain"
+                        )
+                    ]
+                ))
             ]
         )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/Alamofire/Alamofire.git", "5.0.0"..<"6.0.0"),
+        .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", "0.9.0"..<"1.0.0")
     ],
     targets: [
         .executableTarget(
             name: "AppModule",
+            dependencies: [
+                .product(name: "Alamofire", package: "alamofire"),
+                .product(name: "XMLCoder", package: "xmlcoder")
+            ],
             path: "."
         )
     ]
