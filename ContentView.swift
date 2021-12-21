@@ -12,12 +12,9 @@ struct ContentView: View {
                 }
             }
         }
-        ServerBar(onSearch: search, onSave: save)
+        ServerBar(onSearch: search)
             .padding(10)
-    }
-    
-    func save(address: String) {
-        
+            .background(Color(uiColor: .secondarySystemBackground))
     }
     
     func search(address: String) {
@@ -25,28 +22,23 @@ struct ContentView: View {
     }
 }
 
+/// Simple search bar with callback to search and adding fields
 struct ServerBar : View {
     /// Called when the user presses the search button
     let onSearch: (String) -> ()
-    /// Called when the user presses the save button
-    let onSave: (String) -> ()
     
     func action(fun : KeyPath<ServerBar,(String)->()>) -> () -> () {
         return { self[keyPath: fun](address) }
     }
     
     @State
-    var address: String = ""
+    private var address: String = ""
     
     var body: some View {
         HStack {
             TextField("Server", text: $address)
-            Button("Search", action:
-                action(fun: \.onSearch)
-            )
-            Button("Add", action: 
-                action(fun: \.onSave)
-            )
+                .onSubmit(of: /*@START_MENU_TOKEN@*/.text/*@END_MENU_TOKEN@*/, action(fun: \.onSearch) )
+            Button("Search", action: action(fun: \.onSearch) )
         }
     }
 }
