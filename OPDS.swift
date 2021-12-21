@@ -6,27 +6,6 @@ import CryptoKit
 import Alamofire
 import XMLCoder
 
-extension String {
-    func toBase64() -> String {
-        return Data(self.utf8).base64EncodedString()
-    }
-    
-    var md5: String {
-        let data = Data(self.utf8)
-        let digest = Insecure.MD5.hash(data: data)
-        return String(describing: digest)
-    }
-}
-
-func digest(uname:String, password: String, realm: String) -> String {
-    "Digest \(uname):\(realm):\(password)".md5
-}
-
-func basic(uname: String, password: String) -> String {
-    let together = uname+password
-    return "Basic \(together.toBase64())"
-}
-
 class OPDS : ObservableObject {
     @Published
     private(set) var feed: Feed? = nil
@@ -69,6 +48,7 @@ extension OPDS {
             case entries = "entry"
         }
     }
+    
     struct Entry: Codable {
         let id: String
         let title: String
