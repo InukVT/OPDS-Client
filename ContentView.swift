@@ -6,8 +6,12 @@ struct ContentView: View {
     
     @State
     var submit: ((String, String) -> ())? = nil
+    
     @State
-    var showSheet = false
+    var showLoginSheet = false
+    
+    @StateObject
+    var activeServer = OPDS()
     
     @State
     var password = ""
@@ -26,35 +30,51 @@ struct ContentView: View {
             .padding(10)
             .background(Color(uiColor: .secondarySystemBackground))
         
-            .sheet(isPresented: $showSheet) {
-                TextField("Username", text: $username)
-                TextField("Password", text: $password)
-                Button("submit") {
-                    submit?(username, password)
+            .sheet(isPresented: $showLoginSheet) {
+                List {
+                    TextField("Username", text: $username)
+                        .textContentType(.username)
+                    SecureField("Password", text: $password)
+                        .textContentType(.password)
+                    Button("submit") {
+                        submit?(username, password)
+                        showLoginSheet = false
+                    }
                 }
+            }
+        
+            .sheet(isPresented: .init {
+                activeServer.feed != nil && !showLoginSheet
+            } set: {
+                _ in self.activeServer.unload()
+                
+            }) {
+                ServerView(server: self.activeServer, needsLogin: login)
             }
     }
     
     func search(address: String) {
         Task {
             let url = URL(string:address)
-            guard var url = url else {
+            guard let url = url else {
                 print("Url failure")
                 return
             }
-            url.appendPathComponent("/opds")
             do {
-                let _ = try await OPDS(from: url) {
-                    return await withCheckedContinuation { c in
-                        self.submit = { (username, password) in
-                            c.resume(returning: (username, password))
-                        }
-                        self.showSheet = true
-                    }
-                }
+                let _ = try await self.activeServer.load(from: url, path: "/opds", needsLogin: login)
+                
             } catch {
                 print(error)
             }
+        }
+    }
+    
+    func login() async -> (String, String) {
+        return await withCheckedContinuation { c in
+            self.submit = { (username, password) in
+                c.resume(returning: (username, password))
+            }
+            self.showLoginSheet = true
         }
     }
 }
@@ -68,12 +88,14 @@ struct ServerBar : View {
         return { self[keyPath: fun](address) }
     }
     
-    @State
+    static let addressKey = "Server Adress"
+    @AppStorage(Self.addressKey)
     private var address: String = ""
     
     var body: some View {
         HStack {
             TextField("Server", text: $address)
+                .textContentType(.URL)
                 .onSubmit(of: .text, action(fun: \.onSearch) )
             Button("Search", action: action(fun: \.onSearch) )
         }
