@@ -37,14 +37,12 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/Alamofire/Alamofire.git", "5.0.0"..<"6.0.0"),
         .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", "0.9.0"..<"1.0.0")
     ],
     targets: [
         .executableTarget(
             name: "AppModule",
             dependencies: [
-                .product(name: "Alamofire", package: "alamofire"),
                 .product(name: "XMLCoder", package: "xmlcoder")
             ],
             path: "."

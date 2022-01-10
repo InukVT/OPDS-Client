@@ -69,10 +69,10 @@ struct ContentView: View {
         }
     }
     
-    func login() async -> (String, String) {
+    func login() async -> (URLCredential) {
         return await withCheckedContinuation { c in
             self.submit = { (username, password) in
-                c.resume(returning: (username, password))
+                c.resume(returning: URLCredential(user: username, password: password, persistence: .permanent))
             }
             self.showLoginSheet = true
         }

@@ -3,7 +3,7 @@ import SwiftUI
 struct ServerView : View {
     @ObservedObject
     var server: OPDS
-    let needsLogin: () async -> (String, String)
+    let needsLogin: () async -> (URLCredential)
     
     @State
     private var alignment: HorizontalAlignment = .center
@@ -19,7 +19,7 @@ struct ServerView : View {
                                     image.resizable()
                                         .scaledToFit()
                                 } placeholder: {
-                                    Color.purple.opacity(0.1)
+                                    ProgressView()
                                 }
                                 .frame(width: 100, height: 150)
                                 .cornerRadius(10)
@@ -41,8 +41,9 @@ struct ServerView : View {
                                     }
                             } else {
                                 Text(entry.title)
+                                    .padding(5)
                             }
-                        }
+                        }.transition(.slide)
                     }
                 }
             }

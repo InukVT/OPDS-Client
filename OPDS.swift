@@ -18,7 +18,7 @@ class OPDS : ObservableObject {
     func load(
         from url: URL? = nil,
         path: String,
-        needsLogin login: (() async -> (String, String))
+        needsLogin login: @escaping (() async -> (URLCredential))
     ) async throws {
         if url != nil {
             baseURL = url
@@ -30,15 +30,21 @@ class OPDS : ObservableObject {
 
         print("Working on \(workingURL.absoluteString)")
         
+        /*
         var response = await AF.request(workingURL).serializingData().response
 
         while (response.response?.statusCode == 401) {
             print(response.response?.headers ?? "")
             async let (username,password) = login()
-            response = await AF.request(workingURL).authenticate(username: username, password: password).serializingData().response
+            let credentials = await URLCredential(user: username, password: password, persistence: .permanent)
+            response = await AF.request(workingURL).authenticate(with: credentials).serializingData().response
         }
+        */
         
-        guard let data = response.value else {
+        let (data, response) = try await URLSession.shared.data(from: workingURL, delegate: OPDSURLDelegate(needLogin: login))
+        
+        guard !data.isEmpty else {
+            print(response)
             throw Err.noData
         }
         
@@ -60,6 +66,22 @@ class OPDS : ObservableObject {
         case noData = "No Data"
         case illForm = "Data isn't formatted correctly"
         case noURL = "No URL provided"
+    }
+}
+
+class OPDSURLDelegate : NSObject, URLSessionTaskDelegate {
+    let login: () async -> (URLCredential)
+    
+    init(needLogin: @escaping () async -> (URLCredential)) {
+        self.login = needLogin
+    }
+    
+    func urlSession(
+        _ session: URLSession,
+        task : URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge
+    ) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+        return (.useCredential, await login() )
     }
 }
 
