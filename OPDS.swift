@@ -3,13 +3,17 @@ import Combine
 import UIKit
 import SwiftUI
 import CryptoKit
-import Alamofire
 import XMLCoder
 
 class OPDS : ObservableObject {
     @Published
     private(set) var feed: Feed?
     private(set) var baseURL: URL?
+    
+    @Published
+    private(set) var downloadProgress: Progress? = nil
+    
+    //private var downloadDelegates: [OPDSDownloadDelegate] = []
     
     init(feed: Feed? = nil) {
         self.feed = feed
@@ -30,17 +34,6 @@ class OPDS : ObservableObject {
 
         print("Working on \(workingURL.absoluteString)")
         
-        /*
-        var response = await AF.request(workingURL).serializingData().response
-
-        while (response.response?.statusCode == 401) {
-            print(response.response?.headers ?? "")
-            async let (username,password) = login()
-            let credentials = await URLCredential(user: username, password: password, persistence: .permanent)
-            response = await AF.request(workingURL).authenticate(with: credentials).serializingData().response
-        }
-        */
-        
         let (data, response) = try await URLSession.shared.data(from: workingURL, delegate: OPDSURLDelegate(needLogin: login))
         
         guard !data.isEmpty else {
@@ -58,6 +51,32 @@ class OPDS : ObservableObject {
         }
     }
     
+    var delegate: URLSessionDelegate?
+    
+    func download(
+        path: String,
+        expectedBytes: Int64,
+        identifier: String
+    ) throws {
+        guard downloadProgress?.isFinished ?? true,
+              delegate == nil
+        else {
+            throw Err.alreadyRunning
+        }
+        guard let workingURL = URL(string: path, relativeTo: baseURL)
+        else {
+            throw Err.noURL
+        }
+        
+        delegate = OPDSDownloadDelegate(
+            id: identifier,
+            progress: &$downloadProgress,
+            url: workingURL,
+            expectedBytes: expectedBytes + 400
+        )
+        
+    }
+    
     func unload() {
         self.feed = nil
     }
@@ -66,6 +85,52 @@ class OPDS : ObservableObject {
         case noData = "No Data"
         case illForm = "Data isn't formatted correctly"
         case noURL = "No URL provided"
+        case alreadyRunning = "There is already a download going on"
+    }
+}
+
+class OPDSDownloadDelegate : NSObject, URLSessionDelegate {
+    let id: String
+    
+    var backgroundTask: URLSessionTask!
+    
+    lazy var session: URLSession = {
+        
+        let config = URLSessionConfiguration.background(withIdentifier: id)
+        config.isDiscretionary = true
+        config.sessionSendsLaunchEvents = true
+        
+        //downloadDelegates.append(delegate)
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
+    
+    init(id: String, progress: inout Published<Progress?>.Publisher, url workingURL: URL, expectedBytes: Int64) {
+        
+        self.id = id
+        super.init()
+        self.backgroundTask = session.downloadTask(with: workingURL)
+        
+        backgroundTask.countOfBytesClientExpectsToReceive = expectedBytes + 400
+        
+        backgroundTask.resume()
+        print("Url task \(backgroundTask.state)")
+        
+        backgroundTask.publisher(for: \.progress)
+            .print("Progress: ")
+            .map { Optional($0) }
+            .assign(to: &progress)
+    }
+    
+    deinit {
+        print("De-initialised")
+    }
+    
+    func urlSession(_ session: URLSession,
+                    downloadTask: URLSessionDownloadTask,
+                    didWriteData bytesWritten: Int64,
+                    totalBytesWritten: Int64,
+                    totalBytesExpectedToWrite: Int64) {
+        print("\(id): \(downloadTask.progress)%")
     }
 }
 
@@ -81,7 +146,8 @@ class OPDSURLDelegate : NSObject, URLSessionTaskDelegate {
         task : URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge
     ) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        return (.useCredential, await login() )
+        let credentials = await login()
+        return (.useCredential, credentials )
     }
 }
 
@@ -125,5 +191,6 @@ extension OPDS {
         let href: String
         let type: String
         let rel: String?
+        let length: Int?
     }
 }

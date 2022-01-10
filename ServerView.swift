@@ -43,22 +43,33 @@ struct ServerView : View {
                                 Text(entry.title)
                                     .padding(5)
                             }
+                            if let downloadLink = downlaod(link: entry.link), let length = downloadLink.length {
+                                AsyncButton {
+                                    do {
+                                        try server.download(path: downloadLink.href, expectedBytes: Int64(length), identifier: entry.id)
+                                    } catch {
+                                        print(error)
+                                    }
+                                } label: {
+                                    Image(systemName: "arrow.down")
+                                }
+                            }
                         }.transition(.slide)
                     }
                 }
             }
         }.padding()
     }
-    
+    func downlaod(link: [OPDS.Link])-> OPDS.Link? {
+        link.first {
+            $0.rel == "http://opds-spec.org/acquisition"
+        }
+    }
     func cover(link: [OPDS.Link]) -> URL? {
         link.first {
             $0.rel == "http://opds-spec.org/image/thumbnail"
             || $0.rel == "http://opds-spec.org/image"
         }.flatMap { URL(string: $0.href, relativeTo: server.baseURL) }
-        .map {
-            print($0)
-            return $0
-        }
     }
     
     func load(_ link: OPDS.Link) async throws {
