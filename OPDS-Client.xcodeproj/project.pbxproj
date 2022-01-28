@@ -25,7 +25,7 @@
 		FCFB822527A441D800C4EDE3 /* AsyncButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		FCFB822627A441D800C4EDE3 /* ServerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerView.swift; sourceTree = "<group>"; };
 		FCFB822A27A441E700C4EDE3 /* OPDS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPDS.swift; sourceTree = "<group>"; };
-		FCFB822C27A4428900C4EDE3 /* OPDS-Client-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "OPDS-Client-Info.plist"; sourceTree = "<group>"; };
+		FCFB822C27A4428900C4EDE3 /* OPDS-Client-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OPDS-Client-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,7 +43,6 @@
 		FCFB81F427A43F4500C4EDE3 = {
 			isa = PBXGroup;
 			children = (
-				FCFB822C27A4428900C4EDE3 /* OPDS-Client-Info.plist */,
 				FCFB820F27A4400200C4EDE3 /* Shared */,
 				FCFB820227A43FCB00C4EDE3 /* iOS */,
 				FCFB820127A43FCB00C4EDE3 /* Products */,
@@ -61,6 +60,7 @@
 		FCFB820227A43FCB00C4EDE3 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				FCFB822C27A4428900C4EDE3 /* OPDS-Client-Info.plist */,
 				FCABEC1C27A4443C00F85FAC /* AppDelegate.swift */,
 			);
 			path = iOS;
