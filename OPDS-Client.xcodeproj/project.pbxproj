@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FCABEC1D27A4443C00F85FAC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEC1C27A4443C00F85FAC /* AppDelegate.swift */; };
+		FCABEC1E27A4460F00F85FAC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCFB81FB27A43F9000C4EDE3 /* Assets.xcassets */; };
 		FCFB821D27A440DA00C4EDE3 /* XMLCoder in Frameworks */ = {isa = PBXBuildFile; productRef = FCFB821C27A440DA00C4EDE3 /* XMLCoder */; };
 		FCFB822327A441CB00C4EDE3 /* OPDS-Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB822227A441CB00C4EDE3 /* OPDS-Client.swift */; };
 		FCFB822727A441D900C4EDE3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB822427A441D800C4EDE3 /* ContentView.swift */; };
@@ -160,6 +161,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCABEC1E27A4460F00F85FAC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,7 +256,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "OPDS-Client-Info.plist";
+				INFOPLIST_FILE = "iOS/OPDS-Client-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -334,7 +336,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "OPDS-Client-Info.plist";
+				INFOPLIST_FILE = "iOS/OPDS-Client-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
