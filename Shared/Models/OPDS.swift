@@ -4,11 +4,14 @@ import UIKit
 import SwiftUI
 import CryptoKit
 import XMLCoder
+import os
 
 class OPDS : ObservableObject {
     @Published
     private(set) var feed: Feed?
     private(set) var baseURL: URL?
+    
+    private let logger = Logger()
     
     @Published
     private(set) var downloadProgress: Progress? = nil
@@ -32,7 +35,7 @@ class OPDS : ObservableObject {
             throw Err.noURL
         }
 
-        print("Working on \(workingURL.absoluteString)")
+        logger.debug("Working on \(workingURL.absoluteString)")
         
         let (data, response) = try await URLSession.shared.data(from: workingURL, delegate: OPDSURLDelegate(needLogin: login))
         
@@ -51,15 +54,14 @@ class OPDS : ObservableObject {
         }
     }
     
-    var delegate: URLSessionDelegate?
+    var delegate: OPDSDownloadDelegate?
     
     func download(
         path: String,
         expectedBytes: Int64,
         identifier: String
     ) throws {
-        guard downloadProgress?.isFinished ?? true,
-              delegate == nil
+        guard delegate?.backgroundTask.state != .running
         else {
             throw Err.alreadyRunning
         }
@@ -92,17 +94,20 @@ class OPDS : ObservableObject {
 class OPDSDownloadDelegate : NSObject, URLSessionDelegate {
     let id: String
     
-    var backgroundTask: URLSessionTask!
+    var backgroundTask: URLSessionDownloadTask!
     
-    lazy var session: URLSession = {
+    var logger = Logger()
+    
+    /*lazy var session: URLSession = {
         
         let config = URLSessionConfiguration.background(withIdentifier: id)
         config.isDiscretionary = true
         config.sessionSendsLaunchEvents = true
-        
         //downloadDelegates.append(delegate)
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
-    }()
+    }()*/
+    
+    lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
     
     init(id: String, progress: inout Published<Progress?>.Publisher, url workingURL: URL, expectedBytes: Int64) {
         
@@ -110,10 +115,10 @@ class OPDSDownloadDelegate : NSObject, URLSessionDelegate {
         super.init()
         self.backgroundTask = session.downloadTask(with: workingURL)
         
-        backgroundTask.countOfBytesClientExpectsToReceive = expectedBytes + 400
+        //backgroundTask.countOfBytesClientExpectsToReceive = expectedBytes + 400
         
         backgroundTask.resume()
-        print("Url task \(backgroundTask.state)")
+        logger.debug("Url task \(self.backgroundTask.state == .running ? "running" : "not running")")
         
         backgroundTask.publisher(for: \.progress)
             .print("Progress: ")
@@ -132,6 +137,7 @@ class OPDSDownloadDelegate : NSObject, URLSessionDelegate {
                     totalBytesExpectedToWrite: Int64) {
         print("\(id): \(downloadTask.progress)%")
     }
+    
 }
 
 class OPDSURLDelegate : NSObject, URLSessionTaskDelegate {
