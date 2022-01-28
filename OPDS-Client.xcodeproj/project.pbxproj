@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FCABEC1D27A4443C00F85FAC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEC1C27A4443C00F85FAC /* AppDelegate.swift */; };
 		FCFB821D27A440DA00C4EDE3 /* XMLCoder in Frameworks */ = {isa = PBXBuildFile; productRef = FCFB821C27A440DA00C4EDE3 /* XMLCoder */; };
 		FCFB822327A441CB00C4EDE3 /* OPDS-Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB822227A441CB00C4EDE3 /* OPDS-Client.swift */; };
 		FCFB822727A441D900C4EDE3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFB822427A441D800C4EDE3 /* ContentView.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FCABEC1C27A4443C00F85FAC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FCFB81FB27A43F9000C4EDE3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FCFB820027A43FCB00C4EDE3 /* OPDS Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OPDS Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCFB822227A441CB00C4EDE3 /* OPDS-Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OPDS-Client.swift"; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 		FCFB820227A43FCB00C4EDE3 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				FCABEC1C27A4443C00F85FAC /* AppDelegate.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -167,6 +170,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCABEC1D27A4443C00F85FAC /* AppDelegate.swift in Sources */,
 				FCFB822B27A441E700C4EDE3 /* OPDS.swift in Sources */,
 				FCFB822327A441CB00C4EDE3 /* OPDS-Client.swift in Sources */,
 				FCFB822827A441D900C4EDE3 /* AsyncButton.swift in Sources */,
