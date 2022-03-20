@@ -40,17 +40,25 @@ class OPDS : ObservableObject {
         let (data, response) = try await URLSession.shared.data(from: workingURL, delegate: OPDSURLDelegate(needLogin: login))
         
         guard !data.isEmpty else {
-            print(response)
+            logger.error("Error on \(workingURL.absoluteString), response is \(response)")
             throw Err.noData
         }
         
         let decoder = XMLDecoder()
         decoder.dateDecodingStrategy = .iso8601
         decoder.dataDecodingStrategy = .deferredToData
-        let feed = try decoder.decode(Feed.self, from: data)
-        
-        await MainActor.run {
-            self.feed = feed
+        do {
+            let feed = try decoder.decode(Feed.self, from: data)
+            
+            await MainActor.run {
+                self.feed = feed
+            }
+        } catch {
+            logger.error("Error decoding XML on \(workingURL.absoluteString). Error is \(error.localizedDescription)")
+            if let errorString = try? String(data: data, encoding: .utf8) {
+                logger.debug("With contests of \(errorString)")
+            }
+            throw Err.illForm
         }
     }
     
@@ -91,37 +99,40 @@ class OPDS : ObservableObject {
     }
 }
 
-class OPDSDownloadDelegate : NSObject, URLSessionDelegate {
+class OPDSDownloadDelegate : NSObject, URLSessionDownloadDelegate {
     let id: String
     
     var backgroundTask: URLSessionDownloadTask!
     
     var logger = Logger()
     
-    /*lazy var session: URLSession = {
+    lazy var session: URLSession = {
         
         let config = URLSessionConfiguration.background(withIdentifier: id)
         config.isDiscretionary = true
         config.sessionSendsLaunchEvents = true
         //downloadDelegates.append(delegate)
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
-    }()*/
+    }()
     
-    lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+    //lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
     
-    init(id: String, progress: inout Published<Progress?>.Publisher, url workingURL: URL, expectedBytes: Int64) {
+    init(id: String,
+         progress: inout Published<Progress?>.Publisher,
+         url workingURL: URL,
+         expectedBytes: Int64) {
         
         self.id = id
         super.init()
         self.backgroundTask = session.downloadTask(with: workingURL)
         
-        //backgroundTask.countOfBytesClientExpectsToReceive = expectedBytes + 400
+        backgroundTask.countOfBytesClientExpectsToReceive = expectedBytes
         
         backgroundTask.resume()
         logger.debug("Url task \(self.backgroundTask.state == .running ? "running" : "not running")")
         
         backgroundTask.publisher(for: \.progress)
-            .print("Progress: ")
+            .print("Progress")
             .map { Optional($0) }
             .assign(to: &progress)
     }
@@ -135,7 +146,32 @@ class OPDSDownloadDelegate : NSObject, URLSessionDelegate {
                     didWriteData bytesWritten: Int64,
                     totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
-        print("\(id): \(downloadTask.progress)%")
+        guard downloadTask == backgroundTask else { return }
+        logger.debug("\(self.id): \(downloadTask.progress)%")
+    }
+    
+    func urlSession(_ session: URLSession,
+                    downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL) {
+        guard downloadTask == backgroundTask else { return }
+        logger.debug("\(self.id): Finished downloading book to \(location)")
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)
+        for folder in documents {
+            logger.debug("Found folder at \(folder)")
+        }
+    }
+    
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    didCompleteWithError error: Error?) {
+        guard task == backgroundTask else { return }
+        if let error = error ?? task.error {
+            logger.debug("\(self.id): failed downloading with \( error.localizedDescription)")
+        }
+    }
+    
+    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        logger.debug("download done, done.")
     }
     
 }

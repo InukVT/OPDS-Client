@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    
     @State
     var servers: [Server] = []
     
@@ -17,40 +18,64 @@ struct ContentView: View {
     var password = ""
     @State
     var username = ""
+     
+    @State
+    var showSettings = false
     
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                ForEach(servers, id: \.name) { server in
-                    Text(server.name)
+        NavigationView {
+            
+            ScrollView {
+                LazyVStack {
+                    EmptyView()
+                }
+                 
+            }
+            
+            
+            
+            .navigationTitle("Books")
+            .toolbar {
+                Button {
+                    showSettings = true
+                } label: {
+                    Text("Add Server")
                 }
             }
-        }
-        ServerBar(onSearch: search)
-            .padding(10)
-            .background(Color(uiColor: .secondarySystemBackground))
-        
-            .sheet(isPresented: $showLoginSheet) {
-                List {
-                    TextField("Username", text: $username)
-                        .textContentType(.username)
-                    SecureField("Password", text: $password)
-                        .textContentType(.password)
-                    Button("submit") {
-                        submit?(username, password)
-                        showLoginSheet = false
+            
+            .sheet(isPresented: $showSettings) {
+                Settings()
+            }
+            
+             /*
+            ServerBar(onSearch: search)
+                .padding(10)
+                .background(Color(uiColor: .secondarySystemBackground))
+            
+                .sheet(isPresented: $showLoginSheet) {
+                    List {
+                        TextField("Username", text: $username)
+                            .textContentType(.username)
+                        SecureField("Password", text: $password)
+                            .textContentType(.password)
+                        Button("submit") {
+                            submit?(username, password)
+                            showLoginSheet = false
+                        }
                     }
                 }
-            }
-        
-            .sheet(isPresented: .init {
-                activeServer.feed != nil && !showLoginSheet
-            } set: {
-                _ in self.activeServer.unload()
+            
+                .sheet(isPresented: .init {
+                    activeServer.feed != nil && !showLoginSheet
+                } set: {
+                    _ in self.activeServer.unload()
+                    
+                }) {
+                    ServerView(server: self.activeServer, needsLogin: login)
+                }
+             */
                 
-            }) {
-                ServerView(server: self.activeServer, needsLogin: login)
-            }
+        }
     }
     
     func search(address: String) {
@@ -111,4 +136,14 @@ extension Server {
     var id: String {
         name + server
     }
+}
+
+struct ContentViewPreview : PreviewProvider {
+    
+    static var previews: some View {
+        ContentView().preferredColorScheme(.dark)
+        ContentView().preferredColorScheme(.light)
+            
+    }
+    
 }

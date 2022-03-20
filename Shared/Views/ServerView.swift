@@ -48,7 +48,7 @@ struct ServerView : View {
                                     do {
                                         try server.download(path: downloadLink.href, expectedBytes: Int64(length), identifier: entry.id)
                                     } catch {
-                                        print(error)
+                                        print(error.localizedDescription)
                                     }
                                 } label: {
                                     Image(systemName: "arrow.down")

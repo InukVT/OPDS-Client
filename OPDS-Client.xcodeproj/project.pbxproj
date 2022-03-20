@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FC08E73727E756BD004B13AE /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08E73627E756BD004B13AE /* Settings.swift */; };
+		FC08E73A27E75BED004B13AE /* Server.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FC08E73827E75BED004B13AE /* Server.xcdatamodeld */; };
+		FC08E73C27E7608D004B13AE /* PersistantStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08E73B27E7608D004B13AE /* PersistantStore.swift */; };
+		FC355E9B27D64F6600CDC3FF /* Selector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC355E9A27D64F6600CDC3FF /* Selector.swift */; };
+		FC7568C827A881780097B4BF /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC7568C727A881780097B4BF /* PassKit.framework */; };
 		FCABEC1D27A4443C00F85FAC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEC1C27A4443C00F85FAC /* AppDelegate.swift */; };
 		FCABEC1E27A4460F00F85FAC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCFB81FB27A43F9000C4EDE3 /* Assets.xcassets */; };
 		FCFB821D27A440DA00C4EDE3 /* XMLCoder in Frameworks */ = {isa = PBXBuildFile; productRef = FCFB821C27A440DA00C4EDE3 /* XMLCoder */; };
@@ -18,6 +23,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FC08E73627E756BD004B13AE /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		FC08E73927E75BED004B13AE /* Server.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Server.xcdatamodel; sourceTree = "<group>"; };
+		FC08E73B27E7608D004B13AE /* PersistantStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistantStore.swift; sourceTree = "<group>"; };
+		FC355E9A27D64F6600CDC3FF /* Selector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selector.swift; sourceTree = "<group>"; };
+		FC7568C527A87F410097B4BF /* OPDS-Client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "OPDS-Client.entitlements"; sourceTree = "<group>"; };
+		FC7568C727A881780097B4BF /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.2.sdk/System/Library/Frameworks/PassKit.framework; sourceTree = DEVELOPER_DIR; };
 		FCABEC1C27A4443C00F85FAC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FCFB81FB27A43F9000C4EDE3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FCFB820027A43FCB00C4EDE3 /* OPDS Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OPDS Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -34,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC7568C827A881780097B4BF /* PassKit.framework in Frameworks */,
 				FCFB821D27A440DA00C4EDE3 /* XMLCoder in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -41,12 +53,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FC7568C627A881780097B4BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FC7568C727A881780097B4BF /* PassKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		FCFB81F427A43F4500C4EDE3 = {
 			isa = PBXGroup;
 			children = (
+				FC7568C527A87F410097B4BF /* OPDS-Client.entitlements */,
 				FCFB820F27A4400200C4EDE3 /* Shared */,
 				FCFB820227A43FCB00C4EDE3 /* iOS */,
 				FCFB820127A43FCB00C4EDE3 /* Products */,
+				FC7568C627A881780097B4BF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -83,7 +105,9 @@
 			children = (
 				FCFB822527A441D800C4EDE3 /* AsyncButton.swift */,
 				FCFB822427A441D800C4EDE3 /* ContentView.swift */,
+				FC355E9A27D64F6600CDC3FF /* Selector.swift */,
 				FCFB822627A441D800C4EDE3 /* ServerView.swift */,
+				FC08E73627E756BD004B13AE /* Settings.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -91,7 +115,9 @@
 		FCFB821527A4406A00C4EDE3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FC08E73827E75BED004B13AE /* Server.xcdatamodeld */,
 				FCFB822A27A441E700C4EDE3 /* OPDS.swift */,
+				FC08E73B27E7608D004B13AE /* PersistantStore.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -173,11 +199,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCABEC1D27A4443C00F85FAC /* AppDelegate.swift in Sources */,
+				FC08E73A27E75BED004B13AE /* Server.xcdatamodeld in Sources */,
+				FC08E73C27E7608D004B13AE /* PersistantStore.swift in Sources */,
 				FCFB822B27A441E700C4EDE3 /* OPDS.swift in Sources */,
+				FC08E73727E756BD004B13AE /* Settings.swift in Sources */,
 				FCFB822327A441CB00C4EDE3 /* OPDS-Client.swift in Sources */,
 				FCFB822827A441D900C4EDE3 /* AsyncButton.swift in Sources */,
 				FCFB822727A441D900C4EDE3 /* ContentView.swift in Sources */,
 				FCFB822927A441D900C4EDE3 /* ServerView.swift in Sources */,
+				FC355E9B27D64F6600CDC3FF /* Selector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +262,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "OPDS-Client.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -318,6 +349,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "OPDS-Client.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -403,6 +435,19 @@
 			productName = XMLCoder;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		FC08E73827E75BED004B13AE /* Server.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FC08E73927E75BED004B13AE /* Server.xcdatamodel */,
+			);
+			currentVersion = FC08E73927E75BED004B13AE /* Server.xcdatamodel */;
+			path = Server.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = FCFB81F527A43F4500C4EDE3 /* Project object */;
 }
