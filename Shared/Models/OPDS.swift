@@ -202,7 +202,7 @@ extension OPDS {
         }
     }
     
-    struct Entry: Codable {
+    struct Entry: Codable, Identifiable {
         let id: String
         let title: String
         let updated: Date
